@@ -1,7 +1,9 @@
 #pragma once
 #include <glad/glad.h>
 #include <iostream>
-class DrawTexture 
+#include "ConstructDraw.h"
+
+class DrawTexture :public ConstructDraw
 {
 public:
 	DrawTexture();

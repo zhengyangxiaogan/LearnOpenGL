@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "DrawTexture.h"
+#include "ConstructDraw.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -46,10 +47,6 @@ int main()
 		return -1;
 	}
 
-	DrawTexture mDrawTexture;
-	mDrawTexture.SetShader();
-	mDrawTexture.SetContext();
-
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
@@ -57,11 +54,13 @@ int main()
 		// input
 		// -----
 		processInput(window);
-
+		
+		DrawTexture mTexture;
+		mTexture.SetShader();
+		mTexture.SetContext();
 		// draw our first triangle
-		glUseProgram(mDrawTexture.shaderProgram);
-		mDrawTexture.SetDraw();
-		// glBindVertexArray(0); // no need to unbind it every time 
+		glUseProgram(mTexture.shaderProgram);
+		mTexture.SetDraw();
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------

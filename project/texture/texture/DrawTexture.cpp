@@ -1,12 +1,9 @@
 #include "DrawTexture.h"
 
-
-
 DrawTexture::DrawTexture()
 {
 
 }
-
 
 DrawTexture::~DrawTexture()
 {

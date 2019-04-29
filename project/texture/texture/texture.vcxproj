@@ -143,11 +143,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConstructDraw.cpp" />
     <ClCompile Include="DrawTexture.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConstructDraw.h" />
     <ClInclude Include="DrawTexture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
