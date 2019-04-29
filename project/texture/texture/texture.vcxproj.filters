@@ -27,12 +27,21 @@
     <ClCompile Include="ConstructDraw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="TextureTest1.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawTexture.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ConstructDraw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureTest1.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

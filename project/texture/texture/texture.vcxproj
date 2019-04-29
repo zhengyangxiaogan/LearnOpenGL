@@ -147,10 +147,13 @@
     <ClCompile Include="DrawTexture.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="TextureTest1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConstructDraw.h" />
     <ClInclude Include="DrawTexture.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="TextureTest1.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

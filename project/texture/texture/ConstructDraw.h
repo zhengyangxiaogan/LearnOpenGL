@@ -1,5 +1,8 @@
 #pragma once
 
+#include <glad/glad.h>
+#include <iostream>
+
 class ConstructDraw
 {
 public:
@@ -18,6 +21,5 @@ public:
 	virtual void SetShader()
 	{
 	};
-
 };
 
