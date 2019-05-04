@@ -48,7 +48,9 @@ int main()
 		return -1;
 	}
 
-
+	TextureTest1 mTest1;
+	mTest1.SetContext();
+	mTest1.SetShader();
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
@@ -64,9 +66,7 @@ int main()
 		//glUseProgram(mTexture.shaderProgram);
 		//mTexture.SetDraw();
 
-		TextureTest1 mTest1;
-		mTest1.SetContext();
-		mTest1.SetShader();
+
 		glUseProgram(mTest1.shaderProgram);
 		mTest1.SetDraw();
 

@@ -39,6 +39,7 @@ void TextureTest1::SetShader()
 
 		"void main()\n"
 		"{\n"
+		//"   FragColor = (0.5, 0.5, 0.5, 0.5);\n"
 		"   FragColor = texture(ourTexture, TexCoord);\n"
 		"}\n\0";
 
@@ -87,11 +88,9 @@ void TextureTest1::SetShader()
 void TextureTest1::SetContext()
 {
 	int width, height, nrChannels;
-	unsigned char *data = stbi_load("E:/openGL/project/input_texture/test.jpg", &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load("E:/openGL/project/input_texture/wall.jpg", &width, &height, &nrChannels, 0);
+	//std::cout << "width: " << width << ", height: " << height << std::endl;
 	//std::cout << data << std::endl;
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 // ------------------------------------------------------------------
@@ -140,6 +139,9 @@ void TextureTest1::SetContext()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
 
 }
 
@@ -147,11 +149,12 @@ void TextureTest1::SetDraw()
 {
 	// render
 // ------
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.5f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// bind Texture
-	glBindTexture(GL_TEXTURE_2D, texture);
+	//glBindTexture(GL_TEXTURE_2D, texture);
 	glBindVertexArray(VAO);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
