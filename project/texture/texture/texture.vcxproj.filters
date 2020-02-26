@@ -18,23 +18,23 @@
     <ClCompile Include="glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DrawTexture.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ConstructDraw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="TextureTest1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaToCoverage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawTriangle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DrawTexture.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="ConstructDraw.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -44,5 +44,28 @@
     <ClInclude Include="TextureTest1.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="AlphaToCoverage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawTriangle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\a2c.fs">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shader\a2c.vs">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="triangle.vs">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="triangle.fs">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

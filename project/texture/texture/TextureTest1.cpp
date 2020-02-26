@@ -1,7 +1,9 @@
 #include "TextureTest1.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 TextureTest1::TextureTest1()
 {
@@ -23,9 +25,13 @@ void TextureTest1::SetShader()
 		"out vec3 ourColor;\n"
 		"out vec2 TexCoord;"
 
+		"uniform mat4 model;"
+		"uniform mat4 view;"
+		"uniform mat4 projection;"
+
 		"void main()\n"
 		"{\n"
-		"   gl_Position = vec4(aPos, 1.0);\n"
+		"   gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
 		"	ourColor = aColor;"
 		"	TexCoord = aTexCoord;"	
 		"}\n";
@@ -34,13 +40,13 @@ void TextureTest1::SetShader()
 		"out vec4 FragColor;\n"
 		"in vec3 ourColor;\n"
 		"in vec2 TexCoord;"
-
-		"uniform sampler2D ourTexture;\n"
-
+		""
+		"uniform sampler2D texture1;\n"
+		"uniform sampler2D texture2;\n"
 		"void main()\n"
 		"{\n"
-		//"   FragColor = (0.5, 0.5, 0.5, 0.5);\n"
-		"   FragColor = texture(ourTexture, TexCoord);\n"
+		"   FragColor = texture(texture1, TexCoord);\n"
+		//"   FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.1);\n"
 		"}\n\0";
 
 	// build and compile our shader program
@@ -80,6 +86,9 @@ void TextureTest1::SetShader()
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 	}
+	glUseProgram(shaderProgram);
+	glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+	glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
@@ -88,9 +97,6 @@ void TextureTest1::SetShader()
 void TextureTest1::SetContext()
 {
 	int width, height, nrChannels;
-	unsigned char *data = stbi_load("E:/openGL/project/input_texture/wall.jpg", &width, &height, &nrChannels, 0);
-	//std::cout << "width: " << width << ", height: " << height << std::endl;
-	//std::cout << data << std::endl;
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 // ------------------------------------------------------------------
@@ -128,20 +134,62 @@ void TextureTest1::SetContext()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
+	unsigned int texture1, texture2;
 	// load and create a texture 
 	// -------------------------
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+	unsigned char *data = stbi_load("E:/openGL/project/input_texture/wall.jpg", &width, &height, &nrChannels, 0);
+	glGenTextures(1, &texture1);
+	glBindTexture(GL_TEXTURE_2D, texture1); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
 	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load the texture...." << std::endl;
+	}
+	stbi_image_free(data);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+	// set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	data = stbi_load("E:/openGL/project/input_texture/test.jpg", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		//std::cout << glGetError() << std::endl;
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load the texture...." << std::endl;
+	}
+
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 projection = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+
+	unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
+	unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
+	unsigned int proLoc = glGetUniformLocation(shaderProgram, "projection");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(proLoc, 1, GL_FALSE, &projection[0][0]);
 
 }
 
