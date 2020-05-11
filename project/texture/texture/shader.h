@@ -14,7 +14,9 @@ public:
 	unsigned int ID;
 	// constructor generates the shader on the fly
 	// ------------------------------------------------------------------------
-	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr)
+	Shader() {};
+	~Shader() {};
+	void SetShader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr)
 	{
 		// 1. retrieve the vertex/fragment source code from filePath
 		std::string vertexCode;
@@ -41,11 +43,7 @@ public:
 			fShaderFile.close();
 			// convert stream into string
 			vertexCode = vShaderStream.str();
-			
 			fragmentCode = fShaderStream.str();
-
-			std::cout << "vs: " << vertexCode << std::endl;
-			std::cout << "fs: " << fragmentCode << std::endl;
 
 			// if geometry shader path is present, also load a geometry shader
 			if (geometryPath != nullptr)
@@ -64,9 +62,6 @@ public:
 		const char* vShaderCode = vertexCode.c_str();
 		const char * fShaderCode = fragmentCode.c_str();
 
-		std::cout << "vsCode: "  << *vShaderCode << std::endl;
-		std::cout << "fsCode: "  << *fShaderCode << std::endl;
-		
 		// 2. compile shaders
 		unsigned int vertex, fragment;
 		// vertex shader
@@ -91,7 +86,6 @@ public:
 		}
 		// shader Program
 		ID = glCreateProgram();
-		std::cout << ID << std::endl;
 		glAttachShader(ID, vertex);
 		glAttachShader(ID, fragment);
 		if (geometryPath != nullptr)
@@ -111,6 +105,12 @@ public:
 	{
 		glUseProgram(ID);
 	}
+
+	unsigned int getID()
+	{
+		return ID;
+	}
+
 	// utility uniform functions
 	// ------------------------------------------------------------------------
 	void setBool(const std::string &name, bool value) const

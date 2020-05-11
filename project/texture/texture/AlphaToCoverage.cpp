@@ -16,7 +16,7 @@ AlphaToCoverage::~AlphaToCoverage()
 
 void AlphaToCoverage::SetShader()
 {
-	Shader outShader("a2c.vs", "a2c.fs");
+	outShader.SetShader("a2c.vs", "a2c.fs");
 	outShader.use();
 }
 

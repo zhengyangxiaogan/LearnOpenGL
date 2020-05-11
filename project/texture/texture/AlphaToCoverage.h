@@ -14,5 +14,6 @@ public:
 	unsigned int VBO, VAO, EBO;
 
 	int shaderProgram;
+	Shader outShader;
 };
 

@@ -47,22 +47,18 @@ int main()
 		return -1;
 	}
 
+
 	DrawTriangle mTest1;
-	mTest1.SetShader0();
-	mTest1.SetShader1();
 
 	while (!glfwWindowShouldClose(window))
 	{
 		// input
 		// -----
 		processInput(window);	
+		mTest1.SetShader0();
+		mTest1.SetShader1();
 		mTest1.SetContext();
 		mTest1.SetDraw();
-		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		//glClear(GL_COLOR_BUFFER_BIT);
-		//glUseProgram(shaderProgram);
-		//glDepthRange(0.6, 0.6);
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------

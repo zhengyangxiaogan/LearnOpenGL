@@ -1,6 +1,8 @@
 #include "DrawTriangle.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 DrawTriangle::DrawTriangle()
 {
@@ -35,7 +37,6 @@ void DrawTriangle::SetShader0()
 		"   FragColor = ourColor;\n"
 		"}\n\0";
 
-	// build and compile our shader program
 // ------------------------------------
 // vertex shader
 	int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -79,9 +80,8 @@ void DrawTriangle::SetShader0()
 
 void DrawTriangle::SetShader1()
 {
-	shaderProgram1 = Shader("triangle.vs", "triangle.fs").ID;
+	//ourShader.SetShader("triangle.vs", "triangle.fs");
 }
-
 
 
 void DrawTriangle::SetContext()
@@ -122,29 +122,41 @@ void DrawTriangle::SetContext()
 	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-}
 
-void DrawTriangle::SetDraw()
-{
-	// render
-// ------
+	const float radius = 10.0f;
+	float camX = sin(glfwGetTime()) * radius;
+	float camZ = cos(glfwGetTime()) * radius;
+	glm::mat4 view;
+	view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+	view = { 0.0, 0.0, 0.0, 1.0,  0.0, 0.0, 0.0, 2.0,  0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0 };
+	//ourShader.setMat4("viewMatrix", view);
+
+	glm::mat4 trans;
+	trans = glm::scale(trans, glm::vec3(2.0, 2.0, 0.0));
+	//trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+	//ourShader.setMat4("transMatrix", trans);
+	ourShader.SetShader("triangle.vs", "triangle.fs");
+
+	unsigned int transformLoc = glGetUniformLocation(ourShader.getID(), "trans");
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
 	glClearColor(0.0, 0.0f, 0.0f, 1.0f);
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(shaderProgram0);
-	glDepthRange(0.6, 0.0f);
+	glDepthRange(0.0, 0.6f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glBindVertexArray(VAO);
 	glEnableVertexAttribArray(0);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
-	glDepthRange(1.0f, 0.0f);
-	glUseProgram(shaderProgram1);
-	//glEnable(GL_POLYGON_OFFSET_FILL);
-	//glPolygonOffset(0, 1);
-	//glEnable(GL_DEPTH_TEST);
-	//glDepthFunc(GL_EQUAL);
-	//glDepthFunc(GL_LESS);
+	glDepthRange(0.0f, 1.0f);
+	ourShader.use();
 	glDrawArrays(GL_TRIANGLES, 3, 3);
+}
+
+void DrawTriangle::SetDraw()
+{
+
 }
