@@ -142,8 +142,10 @@ void DrawTriangle::SetDraw()
 	trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 	ourShader.setMat4("transMatrix", trans);
 	ourShader.SetShader("triangle.vs", "triangle.fs");
+
 	unsigned int transformLoc = glGetUniformLocation(shaderProgram0, "trans");
 	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
 	//unsigned int transformLoc = glGetUniformLocation(ourShader.getID(), "trans");
 	//unsigned int transformLoc = glGetUniformLocation(shaderProgram0, "trans");
 	//glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
