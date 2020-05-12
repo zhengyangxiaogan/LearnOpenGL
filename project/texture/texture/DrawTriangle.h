@@ -19,5 +19,7 @@ public:
 	int shaderProgram0;
 	int shaderProgram1;
 	Shader ourShader;
+
+	unsigned short indices[6];
 };
 

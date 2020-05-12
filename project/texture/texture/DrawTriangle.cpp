@@ -82,7 +82,7 @@ void DrawTriangle::SetShader0()
 
 void DrawTriangle::SetShader1()
 {
-	//ourShader.SetShader("triangle.vs", "triangle.fs");
+	ourShader.SetShader("triangle.vs", "triangle.fs");
 }
 
 
@@ -95,14 +95,15 @@ void DrawTriangle::SetContext()
 		-0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,1.0f,
 		0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,1.0f,
 					  
-		-0.5f,  0.5f, 0.5f,  0.0f, 1.0f, 0.0f,1.0f,//Green
-		 0.5f,  0.5f, 0.5f,	 0.0f, 1.0f, 0.0f,1.0f,
-		 0.0f, -0.5f, 0.5f,	 0.0f, 1.0f, 0.0f,1.0f,
+		-0.5f,  0.5f, 0.5f,  0.0f, 0.5f, 0.3f,1.0f,//Green
+		 0.5f,  0.5f, 0.5f,	 0.0f, 0.5f, 0.3f,1.0f,
+		 0.0f, -0.5f, 0.5f,	 0.0f, 0.5f, 0.3f,1.0f,
 	};
-	unsigned short indices[] = {  // note that we start from 0!
-		0, 1, 2,  // first Triangle
-		3, 4, 5   // second Triangle
-	};
+
+	for (unsigned short i = 0; i < 6; i++)
+	{
+		indices[i] = i;
+	}
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -139,9 +140,8 @@ void DrawTriangle::SetDraw()
 	glm::mat4 trans = glm::mat4(1.0f);
 	//trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
 	trans = glm::scale(trans, glm::vec3(2.0, 2.0, 0.0));
-	trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+	trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(1.0f, 0.0f, 1.0f));
 	ourShader.setMat4("transMatrix", trans);
-	ourShader.SetShader("triangle.vs", "triangle.fs");
 
 	unsigned int transformLoc = glGetUniformLocation(shaderProgram0, "trans");
 	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
@@ -155,14 +155,18 @@ void DrawTriangle::SetDraw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(shaderProgram0);
 
-	//glDepthRange(0.0, 1.0f);
-	//glEnable(GL_DEPTH_TEST);
-	//glDepthFunc(GL_LEQUAL);
+	glDepthRange(0.0, 1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 	glBindVertexArray(VAO);
-	//glEnableVertexAttribArray(0);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glEnableVertexAttribArray(0);
+	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
+	//glDrawArrays(GL_TRIANGLES, 3, 3);
+	cout << "Error code: " << glGetError() << endl;
 
 	//glDepthRange(0.0f, 1.0f);
-	//ourShader.use();
+	ourShader.use();
 	//glDrawArrays(GL_TRIANGLES, 3, 3);
+	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, indices);
+	glDrawArrays(GL_TRIANGLES, 3, 3);
 }
