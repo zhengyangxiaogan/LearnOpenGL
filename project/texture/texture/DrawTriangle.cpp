@@ -142,7 +142,8 @@ void DrawTriangle::SetDraw()
 	trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 	ourShader.setMat4("transMatrix", trans);
 	ourShader.SetShader("triangle.vs", "triangle.fs");
-
+	unsigned int transformLoc = glGetUniformLocation(shaderProgram0, "trans");
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 	//unsigned int transformLoc = glGetUniformLocation(ourShader.getID(), "trans");
 	//unsigned int transformLoc = glGetUniformLocation(shaderProgram0, "trans");
 	//glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
@@ -151,8 +152,7 @@ void DrawTriangle::SetDraw()
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(shaderProgram0);
-	unsigned int transformLoc = glGetUniformLocation(shaderProgram0, "trans");
-	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
 	//glDepthRange(0.0, 1.0f);
 	//glEnable(GL_DEPTH_TEST);
 	//glDepthFunc(GL_LEQUAL);
