@@ -24,9 +24,10 @@ void DrawTriangle::SetShader0()
 		"layout (location = 0) in vec3 aPos;\n"
 		"layout (location = 1) in vec4 aColor;\n"
 		"out vec4 ourColor;\n"
+		"uniform mat4 trans;\n"
 		"void main()\n"
 		"{\n"
-		"   gl_Position = vec4(aPos, 1.0);\n"
+		"   gl_Position =  trans * vec4(aPos, 1.0);\n"
 		"   ourColor = aColor;\n"
 		"}\0";
 	const char *fragmentShaderSource = "#version 330 core\n"
@@ -62,6 +63,7 @@ void DrawTriangle::SetShader0()
 		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
+
 	// link shaders
 	shaderProgram0 = glCreateProgram();
 	glAttachShader(shaderProgram0, vertexShader);
@@ -89,13 +91,13 @@ void DrawTriangle::SetContext()
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 // ------------------------------------------------------------------
 	float vertices[] = {
-		 0.0f,  0.5f, 1.0f,  1.0f, 0.0f, 0.0f,1.0f,//Red
-		-0.5f, -0.5f, 1.0f,  1.0f, 0.0f, 0.0f,1.0f,
-		0.5f,  -0.5f, 1.0f,  1.0f, 0.0f, 0.0f,1.0f,
-											  
-		-0.5f,  0.5f, 1.0f,  0.0f, 1.0f, 0.0f,1.0f,//Green
-		 0.5f,  0.5f, 1.0f,	 0.0f, 1.0f, 0.0f,1.0f,
-		 0.0f, -0.5f, 1.0f,	 0.0f, 1.0f, 0.0f,1.0f,
+		 0.0f,  0.5f, 0.5f,  1.0f, 0.0f, 0.0f,1.0f,//Red
+		-0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,1.0f,
+		0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,1.0f,
+					  
+		-0.5f,  0.5f, 0.5f,  0.0f, 1.0f, 0.0f,1.0f,//Green
+		 0.5f,  0.5f, 0.5f,	 0.0f, 1.0f, 0.0f,1.0f,
+		 0.0f, -0.5f, 0.5f,	 0.0f, 1.0f, 0.0f,1.0f,
 	};
 	unsigned short indices[] = {  // note that we start from 0!
 		0, 1, 2,  // first Triangle
@@ -130,33 +132,35 @@ void DrawTriangle::SetContext()
 	view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 	view = { 0.0, 0.0, 0.0, 1.0,  0.0, 0.0, 0.0, 2.0,  0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0 };
 	//ourShader.setMat4("viewMatrix", view);
-
-	glm::mat4 trans;
-	trans = glm::scale(trans, glm::vec3(2.0, 2.0, 0.0));
-	//trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-	//ourShader.setMat4("transMatrix", trans);
-	ourShader.SetShader("triangle.vs", "triangle.fs");
-
-	unsigned int transformLoc = glGetUniformLocation(ourShader.getID(), "trans");
-	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-
-	glClearColor(0.0, 0.0f, 0.0f, 1.0f);
-	glClearDepth(1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glUseProgram(shaderProgram0);
-	glDepthRange(0.0, 0.6f);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glBindVertexArray(VAO);
-	glEnableVertexAttribArray(0);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-
-	glDepthRange(0.0f, 1.0f);
-	ourShader.use();
-	glDrawArrays(GL_TRIANGLES, 3, 3);
 }
 
 void DrawTriangle::SetDraw()
 {
+	glm::mat4 trans = glm::mat4(1.0f);
+	//trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+	trans = glm::scale(trans, glm::vec3(2.0, 2.0, 0.0));
+	trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+	ourShader.setMat4("transMatrix", trans);
+	ourShader.SetShader("triangle.vs", "triangle.fs");
 
+	//unsigned int transformLoc = glGetUniformLocation(ourShader.getID(), "trans");
+	//unsigned int transformLoc = glGetUniformLocation(shaderProgram0, "trans");
+	//glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+	glClearColor(0.0, 1.0f, 1.0f, 1.0f);
+	glClearDepth(1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUseProgram(shaderProgram0);
+	unsigned int transformLoc = glGetUniformLocation(shaderProgram0, "trans");
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+	//glDepthRange(0.0, 1.0f);
+	//glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LEQUAL);
+	glBindVertexArray(VAO);
+	//glEnableVertexAttribArray(0);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	//glDepthRange(0.0f, 1.0f);
+	//ourShader.use();
+	//glDrawArrays(GL_TRIANGLES, 3, 3);
 }

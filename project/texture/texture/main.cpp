@@ -49,14 +49,14 @@ int main()
 
 
 	DrawTriangle mTest1;
-
+	mTest1.SetShader0();
+	mTest1.SetShader1();
 	while (!glfwWindowShouldClose(window))
 	{
 		// input
 		// -----
 		processInput(window);	
-		mTest1.SetShader0();
-		mTest1.SetShader1();
+
 		mTest1.SetContext();
 		mTest1.SetDraw();
 
