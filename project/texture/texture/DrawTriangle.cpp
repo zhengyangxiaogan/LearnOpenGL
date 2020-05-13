@@ -139,7 +139,8 @@ void DrawTriangle::SetDraw()
 {
 	glm::mat4 trans = glm::mat4(1.0f);
 	//trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
-	trans = glm::scale(trans, glm::vec3(2.0, 2.0, 0.0));
+	double time = sin(glfwGetTime());
+	trans = glm::scale(trans, glm::vec3(time, time, 0.0));
 	trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(1.0f, 0.0f, 1.0f));
 	ourShader.setMat4("transMatrix", trans);
 
@@ -160,13 +161,13 @@ void DrawTriangle::SetDraw()
 	glDepthFunc(GL_LEQUAL);
 	glBindVertexArray(VAO);
 	glEnableVertexAttribArray(0);
-	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 	//glDrawArrays(GL_TRIANGLES, 3, 3);
 	cout << "Error code: " << glGetError() << endl;
 
 	//glDepthRange(0.0f, 1.0f);
-	ourShader.use();
+	//ourShader.use();
 	//glDrawArrays(GL_TRIANGLES, 3, 3);
 	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, indices);
-	glDrawArrays(GL_TRIANGLES, 3, 3);
+	//glDrawArrays(GL_TRIANGLES, 3, 3);
 }
